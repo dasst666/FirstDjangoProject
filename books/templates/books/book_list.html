@@ -1,0 +1,32 @@
+{% extends 'books/base.html' %}
+
+{% block content %}
+    <h2>Список книг</h2>
+    
+    <ul>
+        {% for book in books %}
+            <li>
+                <a href="{% url 'book-detail' pk=book.pk %}">{{ book.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Пагинация, если используется paginate_by -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if books.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ books.previous_page_number }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ books.number }} из {{ books.paginator.num_pages }}.
+            </span>
+
+            {% if books.has_next %}
+                <a href="?page={{ books.next_page_number }}">следующая</a>
+                <a href="?page={{ books.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

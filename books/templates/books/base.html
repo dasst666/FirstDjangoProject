@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Моя библиотека{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Добро пожаловать в библиотеку!</h1>
+        <nav>
+            <p>Просто текст</p>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
