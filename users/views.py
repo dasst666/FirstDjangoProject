@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import CustomUserRegisterForm
 
 # Create your views here.
-def register(request):
+def register_view(request):
     if request.method == 'POST':
         form = CustomUserRegisterForm(request.Post)
         if form.is_valid():
@@ -15,3 +15,9 @@ def register(request):
         form = CustomUserRegisterForm()
     
     return render(request, 'users/register.html', {'form': form})
+
+def profile_view(request):
+    user = request.user
+    books = user.books.all()
+
+    return render(request, 'users/profile.html', {'user': user, 'books': books})

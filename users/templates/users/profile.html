@@ -1,0 +1,16 @@
+<!-- templates/users/profile.html -->
+
+{% extends 'books/base.html' %}
+
+{% block content %}
+  <h1>Профиль пользователя {{ user.username }}</h1>
+
+  <h2>Мои книги:</h2>
+  <ul>
+    {% for book in books %}
+      <li>{{ book.title }} — {{ book.author }}</li>
+    {% empty %}
+      <li>Вы ещё не добавили ни одной книги.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
