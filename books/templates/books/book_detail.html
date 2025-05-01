@@ -6,4 +6,21 @@
     <h2>{{ book.title }}</h2>
     <p><strong>Автор:</strong> {{ book.author }}</p>
     <p><strong>Описание:</strong> {{ book.summary }}</p>
+    {% if user.is_authenticated %}
+        {% if user_book %}
+            <p><strong>Ваш статус:</strong> {{ user_book.get_status_display }}</p>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Обновить статус</button>
+            </form>
+        {% else %}
+            <p>Вы ещё не добавили эту книгу. Укажите статус:</p>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Сохранить статус</button>
+            </form>
+        {% endif %}
+    {% endif %}
 {% endblock %}

@@ -29,4 +29,20 @@ class Author(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-        
+class UserBook(models.Model):
+    STATUS_CHOICES = [
+        ('want', 'Буду читать'),
+        ('reading', 'Читаю'),
+        ('read', 'Прочитано'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
+    status = models.CharField(max_length = 10, choices = STATUS_CHOICES)
+
+    class Meta:
+        unique_together = ('user', 'book')
+    
+    def __str__(self):
+        return f'{self.user.username} - {self.book.title}'

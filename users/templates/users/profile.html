@@ -8,9 +8,14 @@
   <h2>Мои книги:</h2>
   <ul>
     {% for book in books %}
-      <li>{{ book.title }} — {{ book.author }}</li>
+      <li><a href="{% url 'book-detail' pk=book.pk %}">{{ book.title }} — {{ book.author }}</a></li>
     {% empty %}
       <li>Вы ещё не добавили ни одной книги.</li>
     {% endfor %}
+    <a href="{% url 'book-list'%}">Список всех книг</a>
   </ul>
+  <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+  </form>
 {% endblock %}

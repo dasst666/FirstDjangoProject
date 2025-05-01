@@ -9,4 +9,11 @@
     <button type="submit">Войти</button>
   </form>
   <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a></p>
+  {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
