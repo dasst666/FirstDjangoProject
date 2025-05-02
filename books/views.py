@@ -61,13 +61,6 @@ class BookListView(ListView):
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-# @login_required
-# def add_book_to_user(request, pk):
-#     book = get_object_or_404(Book, pk=pk)
-#     user = request.user
-#     book.owners.add(user)
-#     return redirect('book-detail', pk=pk)  # или куда хочешь
-
 @login_required
 def update_user_book_status(request, pk):
     book = get_object_or_404(Book, pk=pk)

@@ -21,4 +21,15 @@ def profile_view(request):
     user = request.user
     user_books = UserBook.objects.filter(user = user)
 
-    return render(request, 'users/profile.html', {'user': user, 'user_books': user_books})
+    books_want = user_books.filter(status = 'want')
+    books_read = user_books.filter(status = 'read')
+    books_reading = user_books.filter(status = 'reading')
+
+    return render(
+            request, 'users/profile.html', 
+            {'user': user, 
+            'user_books': user_books, 
+            'books_read': books_read,
+            'books_reading': books_reading,
+            'books_want': books_want,
+        })
