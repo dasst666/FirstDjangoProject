@@ -21,11 +21,15 @@ class BookDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         book = self.get_object()
 
-        user_book = UserBook.objects.filter(user=self.request.user, book=book).first()
-        if user_book:
-            form = UserBookForm(instance = user_book)
-        else:
-            form = None
+        user_book = None
+        form = None 
+
+        if self.request.user.is_authenticated:
+            user_book = UserBook.objects.filter(user = self.request.user, book = book).first()
+            if user_book:
+                form = UserBookForm(instance = user_book)
+            else:
+                form = UserBookForm()
         
         context['user_book'] = user_book
         context['form'] = form
@@ -41,6 +45,8 @@ class BookDetailView(DetailView):
         if form.is_valid():
             form.save()
         return redirect('book-detail', pk=book.pk)
+        
+
 
 
 class BookListView(ListView):
@@ -55,12 +61,12 @@ class BookListView(ListView):
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-@login_required
-def add_book_to_user(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    user = request.user
-    book.owners.add(user)
-    return redirect('book-detail', pk=pk)  # или куда хочешь
+# @login_required
+# def add_book_to_user(request, pk):
+#     book = get_object_or_404(Book, pk=pk)
+#     user = request.user
+#     book.owners.add(user)
+#     return redirect('book-detail', pk=pk)  # или куда хочешь
 
 @login_required
 def update_user_book_status(request, pk):

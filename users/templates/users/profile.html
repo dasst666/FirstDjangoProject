@@ -7,8 +7,8 @@
 
   <h2>Мои книги:</h2>
   <ul>
-    {% for book in books %}
-      <li><a href="{% url 'book-detail' pk=book.pk %}">{{ book.title }} — {{ book.author }}</a></li>
+    {% for user_book in user_books %}
+      <li><a href="{% url 'book-detail' pk=user_book.book.pk %}">{{ user_book.book.title }} — {{ user_book.book.author }}</a></li>
     {% empty %}
       <li>Вы ещё не добавили ни одной книги.</li>
     {% endfor %}
