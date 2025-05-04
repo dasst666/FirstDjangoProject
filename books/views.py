@@ -47,7 +47,7 @@ class BookDetailView(DetailView):
         return redirect('book-detail', pk=book.pk)
         
 
-
+from django.db.models import Q
 
 class BookListView(ListView):
     model = Book
@@ -56,6 +56,11 @@ class BookListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Book.objects.filter(
+                Q(title__icontains = query) | Q(author__first_name__icontains = query)
+            )
         return Book.objects.all()
 
 from django.shortcuts import get_object_or_404, redirect
