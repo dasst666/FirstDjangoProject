@@ -33,3 +33,20 @@ def profile_view(request):
             'books_reading': books_reading,
             'books_want': books_want,
         })
+
+from django.contrib.auth.models import User
+
+def user_list_view(request):
+    users = User.objects.exclude(id = request.user.id)
+    return render(request, 'users/user_list.html', {'users': users})
+
+from django.shortcuts import get_object_or_404
+
+def public_profile_view(request, username):
+    user_profile = get_object_or_404(User, username = username)
+    user_books = UserBook.objects.filter(user = user_profile)
+
+    return render(request, 'users/public_profile.html', {
+        'user_profile': user_profile,
+        'user_books': user_books
+    })

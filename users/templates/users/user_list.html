@@ -1,0 +1,10 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+  <h2>Пользователи</h2>
+  <ul>
+    {% for u in users %}
+      <li><a href="{% url 'public-profile' u.username %}">{{ u.username }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

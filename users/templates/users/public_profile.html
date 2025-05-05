@@ -1,0 +1,10 @@
+<h1>Профиль: {{ user_profile.username }}</h1>
+
+<h2>Книги:</h2>
+<ul>
+  {% for user_book in user_books %}
+    <li>{{ user_book.book.title }} — {{ user_book.status }}</li>
+  {% empty %}
+    <li>Пользователь пока не добавил книг.</li>
+  {% endfor %}
+</ul>
