@@ -80,3 +80,41 @@ def update_user_book_status(request, pk):
         form = UserBookForm(instance = user_book)
     
     return render(request, 'books/book_status_form.html', {'form': form, 'book': book})
+
+import requests
+from django.shortcuts import render
+
+def search_books(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        response = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': query, 'langRestrict': 'ru'})
+        if response.status_code == 200:
+            data = response.json()
+            for item in data.get('items', []):
+                volume_info = item['volumeInfo']
+                results.append({
+                    'title': volume_info.get('title'),
+                    'author': ', '.join(volume_info.get('authors', [])),
+                    'description': volume_info.get('description', ''),
+                })
+
+    return render(request, 'books/search_result.html', {'results': results})
+
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from .models import Book, UserBook
+
+@require_POST
+@login_required
+def import_book(request):
+    title = request.POST.get('title')
+    author = request.POST.get('author')
+    summary = request.POST.get('summary')
+
+    book, created = Book.objects.get_or_create(title=title, author=author, summary=summary)
+    UserBook.objects.get_or_create(user=request.user, book=book, defaults={'status': 'want'})
+
+    return redirect('profile')
+
