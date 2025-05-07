@@ -104,7 +104,7 @@ def search_books(request):
 
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Book, UserBook
+from .models import Book, UserBook, Author
 
 @require_POST
 @login_required
@@ -113,7 +113,19 @@ def import_book(request):
     author = request.POST.get('author')
     summary = request.POST.get('summary')
 
-    book, created = Book.objects.get_or_create(title=title, author=author, summary=summary)
+    try:
+        first_name, last_name = author.split(' ', 1)
+    except:
+        first_name = author
+        last_name = ' '
+    
+    # Получаем или создаём автора
+    author_obj, _ = Author.objects.get_or_create(first_name=first_name, last_name=last_name)
+
+    # Получаем или создаём книгу
+    book, _ = Book.objects.get_or_create(title=title, summary=summary, author=author_obj)
+
+    # Добавляем книгу пользователю
     UserBook.objects.get_or_create(user=request.user, book=book, defaults={'status': 'want'})
 
     return redirect('profile')
