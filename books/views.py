@@ -87,20 +87,28 @@ from django.shortcuts import render
 def search_books(request):
     query = request.GET.get('q')
     results = []
+    local_results = []
 
     if query:
-        response = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': query, 'langRestrict': 'ru'})
-        if response.status_code == 200:
-            data = response.json()
-            for item in data.get('items', []):
-                volume_info = item['volumeInfo']
-                results.append({
-                    'title': volume_info.get('title'),
-                    'author': ', '.join(volume_info.get('authors', [])),
-                    'description': volume_info.get('description', ''),
-                })
+        local_results = Book.objects.filter(
+            Q(title__icontains=query) |
+            Q(author__first_name__icontains=query) |
+            Q(author__last_name__icontains=query)
+        )
 
-    return render(request, 'books/search_result.html', {'results': results})
+        if not local_results.exists():
+            response = requests.get('https://www.googleapis.com/books/v1/volumes', params={'q': query, 'langRestrict': 'ru'})
+            if response.status_code == 200:
+                data = response.json()
+                for item in data.get('items', []):
+                    volume_info = item['volumeInfo']
+                    results.append({
+                        'title': volume_info.get('title'),
+                        'author': ', '.join(volume_info.get('authors', [])),
+                        'description': volume_info.get('description', ''),
+                    })
+
+    return render(request, 'books/search_result.html', {'results': results, 'local_results': local_results})
 
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
