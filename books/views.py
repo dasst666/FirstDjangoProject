@@ -106,6 +106,7 @@ def search_books(request):
                         'title': volume_info.get('title'),
                         'author': ', '.join(volume_info.get('authors', [])),
                         'description': volume_info.get('description', ''),
+                        'image': volume_info.get('imageLinks', {}).get('thumbnail', '')
                     })
 
     return render(request, 'books/search_result.html', {'results': results, 'local_results': local_results})
@@ -120,6 +121,7 @@ def import_book(request):
     title = request.POST.get('title')
     author = request.POST.get('author')
     summary = request.POST.get('summary')
+    image = request.POST.get('image')
 
     try:
         first_name, last_name = author.split(' ', 1)
@@ -131,7 +133,7 @@ def import_book(request):
     author_obj, _ = Author.objects.get_or_create(first_name=first_name, last_name=last_name)
 
     # Получаем или создаём книгу
-    book, _ = Book.objects.get_or_create(title=title, summary=summary, author=author_obj)
+    book, _ = Book.objects.get_or_create(title=title, summary=summary, author=author_obj, defaults={'image_url': image})
 
     # Добавляем книгу пользователю
     UserBook.objects.get_or_create(user=request.user, book=book, defaults={'status': 'want'})

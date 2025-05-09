@@ -1,37 +1,56 @@
-<form method="get">
-    <input type="text" name="q" placeholder="Найти книгу...">
-    <button type="submit">Поиск</button>
+{% extends 'books/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <!-- Поисковая форма -->
+  <form method="get" action="{% url 'book-search' %}" class="d-flex justify-content-center mb-4">
+    <input type="text" name="q" class="form-control me-2 w-50" placeholder="Найти книгу..." value="{{ request.GET.q }}">
+    <button type="submit" class="btn btn-success">🔍 Поиск</button>
   </form>
-  
-  <h2>Результаты поиска для "{{ query }}"</h2>
 
   {% if local_results %}
-    <h3>Найдено в библиотеке:</h3>
-    <ul>
+    <h4 class="mt-5">📚 Найдено в библиотеке:</h4>
+    <div class="row row-cols-2 row-cols-md-4 g-4">
       {% for book in local_results %}
-        <li>{{ book.title }} — {{ book.author }}</li>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ book.title }}</h5>
+              <p class="card-text"><small class="text-muted">{{ book.author }}</small></p>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </ul>
-  {% elif external_results %}
-    <h3>Найдено во внешнем источнике:</h3>
-    <ul>
-      {% for book in external_results %}
-        <li>
-          <strong>{{ book.title }}</strong><br>
-          Автор: {{ book.author }}<br>
-          {{ book.description|truncatechars:200 }}
-          <form method="post" action="{% url 'import-book' %}">
-            {% csrf_token %}
-            <input type="hidden" name="title" value="{{ book.title }}">
-            <input type="hidden" name="author" value="{{ book.author }}">
-            <input type="hidden" name="summary" value="{{ book.description }}">
-            <button type="submit">Добавить в библиотеку</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Ничего не найдено.</p>
+    </div>
   {% endif %}
-  
-  
+
+  {% if results %}
+    <h4 class="text-center">🌐 Найдено во внешнем источнике:</h4>
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+      {% for book in results %}
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            {% if book.image %}
+              <img src="{{ book.image }}" class="card-img-top img-fluid" style="max-height: 200px; width: auto; margin: 0 auto; display: block;" alt="Обложка книги">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ book.title }}</h5>
+              <p class="card-text"><small class="text-muted">{{ book.author }}</small></p>
+              <form method="post" action="{% url 'import-book' %}" class="mt-auto">
+                {% csrf_token %}
+                <input type="hidden" name="title" value="{{ book.title }}">
+                <input type="hidden" name="author" value="{{ book.author }}">
+                <input type="hidden" name="summary" value="{{ book.description }}">
+                <input type="hidden" name="image" value="{{ book.image }}">
+                <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">➕ Добавить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% elif not local_results %}
+    <p class="text-center mt-4">😔 Ничего не найдено.</p>
+  {% endif %}
+</div>
+{% endblock %}
