@@ -2,11 +2,20 @@
 
 {% block content %}
 <div class="container mt-4">
-  <!-- Поисковая форма -->
-  <form method="get" action="{% url 'book-search' %}" class="d-flex justify-content-center mb-4">
+  
+  <div class="position-relative mb-4">
+  <!-- Поисковая форма по центру -->
+  <form method="get" action="{% url 'book-search' %}" class="d-flex justify-content-center">
     <input type="text" name="q" class="form-control me-2 w-50" placeholder="Найти книгу..." value="{{ request.GET.q }}">
-    <button type="submit" class="btn btn-success">🔍 Поиск</button>
+    <button type="submit" class="btn btn-success">🔍</button>
   </form>
+
+  <!-- Кнопка профиля справа -->
+  <a href="{% url 'profile' %}" class="btn btn-outline-primary rounded-circle d-flex justify-content-center align-items-center"
+     style="position: absolute; top: 0; right: 0; width: 40px; height: 40px;">
+     <i class="bi bi-person-fill"></i>
+  </a>
+</div>
 
   {% if local_results %}
     <h4 class="mt-5">📚 Найдено в библиотеке:</h4>
@@ -14,6 +23,9 @@
       {% for book in local_results %}
         <div class="col">
           <div class="card h-100 shadow-sm">
+            {% if book.image_url %}
+                <img src="{{ book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; width: auto; margin: 0 auto; display: block;" alt="Обложка книги">
+            {% endif %}
             <div class="card-body text-center">
               <h5 class="card-title">{{ book.title }}</h5>
               <p class="card-text"><small class="text-muted">{{ book.author }}</small></p>
