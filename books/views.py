@@ -55,14 +55,6 @@ class BookListView(ListView):
     context_object_name = 'books'
     paginate_by = 10
 
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
-            return Book.objects.filter(
-                Q(title__icontains = query) | Q(author__first_name__icontains = query)
-            )
-        return Book.objects.all()
-
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -114,6 +106,7 @@ def search_books(request):
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Book, UserBook, Author
+from django.http import JsonResponse
 
 @require_POST
 @login_required
@@ -138,5 +131,5 @@ def import_book(request):
     # Добавляем книгу пользователю
     UserBook.objects.get_or_create(user=request.user, book=book, defaults={'status': 'want'})
 
-    return redirect('profile')
+    return JsonResponse({'status': 'success', 'message': 'Книга добавлена'})
 

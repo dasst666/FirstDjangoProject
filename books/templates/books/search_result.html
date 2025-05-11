@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  
+
   <div class="position-relative mb-4">
   <!-- Поисковая форма по центру -->
   <form method="get" action="{% url 'book-search' %}" class="d-flex justify-content-center">
@@ -48,18 +48,47 @@
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">{{ book.title }}</h5>
               <p class="card-text"><small class="text-muted">{{ book.author }}</small></p>
-              <form method="post" action="{% url 'import-book' %}" class="mt-auto">
+              <form method="post" action="{% url 'import-book' %}" class="mt-auto import-book-form" data-url="{% url 'import-book' %}">
                 {% csrf_token %}
                 <input type="hidden" name="title" value="{{ book.title }}">
                 <input type="hidden" name="author" value="{{ book.author }}">
                 <input type="hidden" name="summary" value="{{ book.description }}">
                 <input type="hidden" name="image" value="{{ book.image }}">
-                <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">➕ Добавить</button>
+                <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Добавить</button>
               </form>
             </div>
           </div>
         </div>
-      {% endfor %}
+      {% endfor %}    
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.import-book-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+              e.preventDefault();
+      
+              const button = form.querySelector('button');
+              const formData = new FormData(form);
+      
+              fetch("{% url 'import-book' %}", {
+                method: 'POST',
+                headers: {
+                  'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: formData
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === 'success') {
+                  button.textContent = 'Добавлено';
+                  button.classList.remove('btn-primary');
+                  button.classList.add('btn-success');
+                  button.disabled = true;
+                }
+              });
+            });
+          });
+        });
+      </script> 
     </div>
   {% elif not local_results %}
     <p class="text-center mt-4">😔 Ничего не найдено.</p>
