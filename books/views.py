@@ -1,16 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
-from .models import Book, UserBook
+from .models import Book, UserBook, Author
 from .forms import UserBookForm
 
 # Create your views here.
-
-from django.shortcuts import render
-
-def index(request):
-    books = Book.objects.all()
-    return render(request, 'books/index.html', {'books': books})
-
 
 class BookDetailView(DetailView):
     model = Book
@@ -46,7 +39,6 @@ class BookDetailView(DetailView):
             form.save()
         return redirect('book-detail', pk=book.pk)
         
-
 from django.db.models import Q
 
 class BookListView(ListView):
@@ -55,26 +47,33 @@ class BookListView(ListView):
     context_object_name = 'books'
     paginate_by = 10
 
-from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-@login_required
-def update_user_book_status(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    user_book, created = UserBook.objects.get_or_create(user = request.user, book = book)
 
-    if request.method =='POST':
-        form = UserBookForm(request.POST, instance = user_book)
-        if form.is_valid():
-            form.save()
-            return redirect('book-detail', pk = pk)
-    else:
-        form = UserBookForm(instance = user_book)
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+class UserBookUpdateView(LoginRequiredMixin, UpdateView):
+    model = UserBook
+    form_class = UserBookForm
+    template_name = 'books/book_status_form.html'
+
+    def get_object(self):
+        book = get_object_or_404(Book, pk.self.kwargs['pk'])
+
+        user_book, _ = UserBook.objects.get_or_create(user=self.request.user, book=book)
+        return user_book
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['book'] = get_object_or_404(Book, pk=self.kwargs['pk'])
+        return context
     
-    return render(request, 'books/book_status_form.html', {'form': form, 'book': book})
+    def get_success_url(self):
+        return reverse('book-detail', kwargs={'pk': self.kwargs['pk']})
 
 import requests
-from django.shortcuts import render
 
 def search_books(request):
     query = request.GET.get('q')
@@ -104,8 +103,6 @@ def search_books(request):
     return render(request, 'books/search_result.html', {'results': results, 'local_results': local_results})
 
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-from .models import Book, UserBook, Author
 from django.http import JsonResponse
 
 @require_POST

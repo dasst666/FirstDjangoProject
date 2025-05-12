@@ -24,7 +24,9 @@
         <div class="col">
           <div class="card h-100 shadow-sm">
             {% if book.image_url %}
-                <img src="{{ book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; width: auto; margin: 0 auto; display: block;" alt="Обложка книги">
+            <a href="{% url 'book-detail' pk=book.pk %}">
+              <img src="{{ book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; width: auto; margin: 0 auto; display: block;" alt="Обложка книги">
+            </a>
             {% endif %}
             <div class="card-body text-center">
               <h5 class="card-title">{{ book.title }}</h5>

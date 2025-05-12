@@ -19,8 +19,10 @@
       <div class="col">
         <div class="card h-100 shadow-sm">
           {% if user_book.book.image_url %}
-            <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-          {% endif %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+            {% endif %}
           <div class="card-body text-center">
             <h6 class="card-title">{{ user_book.book.title }}</h6>
             <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
@@ -40,8 +42,10 @@
       <div class="col">
         <div class="card h-100 shadow-sm">
           {% if user_book.book.image_url %}
-            <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-          {% endif %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+            {% endif %}
           <div class="card-body text-center">
             <h6 class="card-title">{{ user_book.book.title }}</h6>
             <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
@@ -61,8 +65,10 @@
       <div class="col">
         <div class="card h-100 shadow-sm">
           {% if user_book.book.image_url %}
-            <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-          {% endif %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+              {% endif %}
           <div class="card-body text-center">
             <h6 class="card-title">{{ user_book.book.title }}</h6>
             <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>

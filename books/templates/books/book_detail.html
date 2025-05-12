@@ -3,25 +3,47 @@
 {% block title %}{{ book.title }}{% endblock %}
 
 {% block content %}
-    <h2>{{ book.title }}</h2>
-    <p><strong>Автор:</strong> {{ book.author }}</p>
-    <p><strong>Описание:</strong> {{ book.summary }}</p>
-    {% if user.is_authenticated %}
-        {% if user_book %}
-            <p><strong>Ваш статус:</strong> {{ user_book.get_status_display }}</p>
-            <form method="POST">
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <div class="row g-4">
+      {% if book.image_url %}
+      <div class="col-md-4 text-center">
+        <img src="{{ book.image_url }}" class="img-fluid rounded shadow-sm" style="max-height: 300px;" alt="Обложка книги">
+      </div>
+      {% endif %}
+      <div class="col-md-8">
+        <h2 class="mb-3">{{ book.title }}</h2>
+        <p><strong>Автор:</strong> {{ book.author }}</p>
+        <p><strong>Описание:</strong></p>
+        <p>{{ book.summary|linebreaks }}</p>
+
+        {% if user.is_authenticated %}
+          {% if user_book %}
+            <div class="mt-4">
+              <p><strong>Ваш статус:</strong> {{ user_book.get_status_display }}</p>
+              <form method="POST" class="d-flex gap-2 align-items-end">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-success">Обновить статус</button>
-            </form>
-        {% else %}
-            <p>Вы ещё не добавили эту книгу. Укажите статус:</p>
-            <form method="POST">
+              </form>
+            </div>
+          {% else %}
+            <div class="mt-4">
+              <p>Вы ещё не добавили эту книгу. Укажите статус:</p>
+              <form method="POST" class="d-flex gap-2 align-items-end">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-primary">Сохранить статус</button>
-            </form>
+              </form>
+            </div>
+          {% endif %}
         {% endif %}
-    {% endif %}
-    <a href="{% url 'profile' %}">Назад</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="{% url 'profile' %}" class="btn btn-outline-secondary">← Назад в профиль</a>
+  </div>
+</div>
 {% endblock %}
