@@ -15,7 +15,7 @@ def register_view(request):
     else:
         form = CustomUserRegisterForm()
     
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
 
 def profile_view(request):
     user = request.user
@@ -46,7 +46,14 @@ def public_profile_view(request, username):
     user_profile = get_object_or_404(User, username = username)
     user_books = UserBook.objects.filter(user = user_profile)
 
+    books_want = user_books.filter(status = 'want')
+    books_read = user_books.filter(status = 'read')
+    books_reading = user_books.filter(status = 'reading')
+
     return render(request, 'users/public_profile.html', {
         'user_profile': user_profile,
-        'user_books': user_books
+        'user_books': user_books,
+        'books_read': books_read,
+        'books_reading': books_reading,
+        'books_want': books_want,
     })

@@ -1,10 +1,89 @@
-<h1>Профиль: {{ user_profile.username }}</h1>
+{% extends 'books/base.html' %}
 
-<h2>Книги:</h2>
-<ul>
-  {% for user_book in user_books %}
-    <li>{{ user_book.book.title }} — {{ user_book.status }}</li>
-  {% empty %}
-    <li>Пользователь пока не добавил книг.</li>
-  {% endfor %}
-</ul>
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Профиль: {{ user_profile.username }}</h1>
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-danger btn-sm">Выйти</button>
+    </form>
+  </div>
+  <a href="{% url 'book-search' %}" class="btn btn-success btn-sm">
+    Поиск книг
+  </a>  
+  <!-- Полка: Прочитано -->
+  <h4 class="mt-4">Прочитано</h4>
+  <div class="row row-cols-2 row-cols-md-4 g-4">
+    {% for user_book in books_read %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          {% if user_book.book.image_url %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+            {% endif %}
+          <div class="card-body text-center">
+            <h6 class="card-title">{{ user_book.book.title }}</h6>
+            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Нет прочитанных книг.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Полка: Читаю -->
+  <h4 class="mt-5">Сейчас читает</h4>
+  <div class="row row-cols-2 row-cols-md-4 g-4">
+    {% for user_book in books_reading %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          {% if user_book.book.image_url %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+            {% endif %}
+          <div class="card-body text-center">
+            <h6 class="card-title">{{ user_book.book.title }}</h6>
+            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Нет книг в процессе чтения.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Полка: Буду читать -->
+  <h4 class="mt-5">📚 Планирует прочесть</h4>
+  <div class="row row-cols-2 row-cols-md-4 g-4">
+    {% for user_book in books_want %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          {% if user_book.book.image_url %}
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
+            </a>
+              {% endif %}
+          <div class="card-body text-center">
+            <h6 class="card-title">{{ user_book.book.title }}</h6>
+            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Нет книг в списке "Буду читать".</p>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-5">
+    <a href="{% url 'book-list' %}" class="btn btn-secondary">📖 Перейти к каталогу</a>
+  </div>
+</div>
+{% endblock %}
+
