@@ -2,20 +2,22 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import CustomUserRegisterForm
 from books.models import UserBook
+from django.contrib.auth import login
 
 # Create your views here.
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Аккаунт для {username} успешно создан')
-            return redirect('login')
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'Аккаунт для {user.username} успешно создан и вы вошли в систему')
+            return redirect('profile')
     else:
         form = CustomUserRegisterForm()
     
     return render(request, 'registration/register.html', {'form': form})
+
 
 def profile_view(request):
     user = request.user

@@ -59,7 +59,7 @@
   </div>
 
   <!-- Полка: Буду читать -->
-  <h4 class="mt-5">📚 Планирую прочитать</h4>
+  <h4 class="mt-5">Планирую прочитать</h4>
   <div class="row row-cols-2 row-cols-md-4 g-4">
     {% for user_book in books_want %}
       <div class="col">
@@ -72,6 +72,7 @@
           <div class="card-body text-center">
             <h6 class="card-title">{{ user_book.book.title }}</h6>
             <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+            <p class="card-text"><small class="text-muted">{{ user_book.book.categories }}</small></p>
             <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
           </div>
         </div>

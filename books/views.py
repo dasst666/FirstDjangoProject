@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
-from .models import Book, UserBook, Author
+from .models import Book, UserBook, Author, Genre
 from .forms import UserBookForm
 
 # Create your views here.
@@ -48,12 +48,11 @@ class BookListView(ListView):
     paginate_by = 10
 
 from django.contrib.auth.decorators import login_required
-
-
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+
 class UserBookUpdateView(LoginRequiredMixin, UpdateView):
     model = UserBook
     form_class = UserBookForm
@@ -97,7 +96,8 @@ def search_books(request):
                         'title': volume_info.get('title'),
                         'author': ', '.join(volume_info.get('authors', [])),
                         'description': volume_info.get('description', ''),
-                        'image': volume_info.get('imageLinks', {}).get('thumbnail', '')
+                        'image': volume_info.get('imageLinks', {}).get('thumbnail', ''),
+                        'categories': ', '.join(volume_info.get('categories', [])),
                     })
 
     return render(request, 'books/search_result.html', {'results': results, 'local_results': local_results})
@@ -112,18 +112,30 @@ def import_book(request):
     author = request.POST.get('author')
     summary = request.POST.get('summary')
     image = request.POST.get('image')
+    categories_str = request.POST.get('categories', '')  # строка: "Fiction, Mystery"
 
     try:
         first_name, last_name = author.split(' ', 1)
     except:
         first_name = author
-        last_name = ' '
-    
+        last_name = ''
+
     # Получаем или создаём автора
     author_obj, _ = Author.objects.get_or_create(first_name=first_name, last_name=last_name)
 
     # Получаем или создаём книгу
-    book, _ = Book.objects.get_or_create(title=title, summary=summary, author=author_obj, defaults={'image_url': image})
+    book, _ = Book.objects.get_or_create(
+        title=title,
+        summary=summary,
+        author=author_obj,
+        defaults={'image_url': image}
+    )
+
+    # Обработка жанров
+    genre_names = [genre.strip() for genre in categories_str.split(',') if genre.strip()]
+    for name in genre_names:
+        genre, _ = Genre.objects.get_or_create(name=name)
+        book.genres.add(genre)
 
     # Добавляем книгу пользователю
     UserBook.objects.get_or_create(user=request.user, book=book, defaults={'status': 'want'})

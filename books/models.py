@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 # Create your models here.
+class Genre(models.Model):
+    name = models.CharField(max_length = 50, unique = True)
 
 class Book(models.Model):
     title = models.CharField(max_length = 100)
@@ -14,6 +16,8 @@ class Book(models.Model):
 
     image_url = models.URLField(blank=True, null = True)
 
+    genres = models.ManyToManyField(Genre, related_name = 'books')
+
     def __str__(self):
         return self.title
 
@@ -23,6 +27,8 @@ class Book(models.Model):
     class Meta:
         ordering = ['title']
 
+    def __str__(self):
+        return self.name
 
 class Author(models.Model):
     first_name = models.CharField(max_length = 50)
