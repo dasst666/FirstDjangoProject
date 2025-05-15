@@ -1,34 +1,76 @@
 {% extends 'books/base.html' %}
 
 {% block content %}
-    <a href="{% url 'profile' %}">Мой профиль</a>
-  
-    <h2>Список книг</h2>
-    
-    <ul>
-        {% for book in books %}
-            <li>
-                <a href="{% url 'book-detail' pk=book.pk %}">{{ book.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    
-    <!-- Пагинация, если используется paginate_by -->
-    <div class="pagination">
-        <span class="step-links">
-            {% if books.has_previous %}
-                <a href="?page=1">&laquo; первая</a>
-                <a href="?page={{ books.previous_page_number }}">предыдущая</a>
-            {% endif %}
-
-            <span class="current">
-                Страница {{ books.number }} из {{ books.paginator.num_pages }}.
-            </span>
-
-            {% if books.has_next %}
-                <a href="?page={{ books.next_page_number }}">следующая</a>
-                <a href="?page={{ books.paginator.num_pages }}">последняя &raquo;</a>
-            {% endif %}
-        </span>
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Список книг</h2>
+        <a href="{% url 'profile' %}" class="btn btn-outline-primary">Мой профиль</a>
     </div>
+
+    <!-- Фильтр по жанрам -->
+    <form method="get" class="mb-4">
+        <div class="card p-3">
+            <label for="genres" class="form-label">Фильтр по жанрам:</label>
+            <select name="genres" id="genres" class="form-select" multiple size="5">
+                {% for genre in all_genres %}
+                    <option value="{{ genre.name }}"
+                        {% if genre.name in selected_genres %}selected{% endif %}>
+                        {{ genre.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-success mt-3">Применить</button>
+        </div>
+    </form>
+
+    <!-- Список книг -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Книги:</h4>
+            <ul class="list-group list-group-flush">
+                {% for book in books %}
+                    <li class="list-group-item">
+                        <a href="{% url 'book-detail' pk=book.pk %}" class="fw-bold">{{ book.title }}</a><br>
+                        <small class="text-muted">Жанры: 
+                            {% for genre in book.genres.all %}
+                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </small>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Книг не найдено</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Пагинация -->
+    {% if books.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if books.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% for genre in selected_genres %}&genres={{ genre }}{% endfor %}">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ books.previous_page_number }}{% for genre in selected_genres %}&genres={{ genre }}{% endfor %}">Назад</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Страница {{ books.number }} из {{ books.paginator.num_pages }}</span>
+                </li>
+
+                {% if books.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ books.next_page_number }}{% for genre in selected_genres %}&genres={{ genre }}{% endfor %}">Вперёд</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ books.paginator.num_pages }}{% for genre in selected_genres %}&genres={{ genre }}{% endfor %}">&raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
 {% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from .models import Book, UserBook, Author, Genre
 from .forms import UserBookForm
+import requests
 
 # Create your views here.
 
@@ -41,11 +42,27 @@ class BookDetailView(DetailView):
         
 from django.db.models import Q
 
+from django.views.generic import ListView
+from .models import Book, Genre
+
 class BookListView(ListView):
     model = Book
     template_name = 'books/book_list.html'
     context_object_name = 'books'
     paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        selected_genres = self.request.GET.getlist('genres')
+        if selected_genres:
+            queryset = queryset.filter(genres__name__in=selected_genres).distinct()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['all_genres'] = Genre.objects.all()
+        context['selected_genres'] = self.request.GET.getlist('genres')
+        return context
 
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
