@@ -50,11 +50,7 @@
               <h5 class="card-title">{{ book.title }}</h5>
               <p class="card-text"><small class="text-muted">{{ book.author }}</small></p>
               <p class="card-text"><small class="text-muted">{{ book.categories }}</small></p>
-              {% if book.categories.0 %}
-                {{ book.categories|join:', ' }}
-              {% else %}
-                {{ book.categories }}
-              {% endif %}
+              <p> {{ book.categories|join:', ' }}</p>  
               <form method="post" action="{% url 'import-book' %}" class="mt-auto import-book-form" data-url="{% url 'import-book' %}">
                 {% csrf_token %}
                 <input type="hidden" name="title" value="{{ book.title }}">

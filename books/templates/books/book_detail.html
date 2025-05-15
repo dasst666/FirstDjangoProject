@@ -14,11 +14,10 @@
       <div class="col-md-8">
         <h2 class="mb-3">{{ book.title }}</h2>
         <p><strong>Автор:</strong> {{ book.author }}</p>
-        <p><strong>Жанр:</strong>
-          {% for genre in book.genres.all %}
-            {{ genre.name }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-          {{ book.genres.all }}
+        <p class="card-text"><strong>Жанр:</strong>
+            {% for genre in user_book.book.genres.all %}
+              {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
         </p>
         <p><strong>Описание:</strong></p>
         <p>{{ book.summary|linebreaks }}</p>

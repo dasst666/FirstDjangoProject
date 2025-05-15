@@ -132,7 +132,8 @@ def import_book(request):
     )
 
     # Обработка жанров
-    genre_names = [genre.strip() for genre in categories_str.split(',') if genre.strip()]
+    # genre_names = [genre.strip() for genre in categories_str.split(',') if genre.strip()]
+    genre_names = [genre.strip() for genre in categories_str.replace(',', '').split() if genre.strip()]
     for name in genre_names:
         genre, _ = Genre.objects.get_or_create(name=name)
         book.genres.add(genre)
