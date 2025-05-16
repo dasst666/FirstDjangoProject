@@ -1,10 +1,22 @@
 {% extends "books/base.html" %}
 
 {% block content %}
-  <h2>Пользователи</h2>
-  <ul>
-    {% for u in users %}
-      <li><a href="{% url 'public-profile' u.username %}">{{ u.username }}</a></li>
-    {% endfor %}
-  </ul>
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Пользователи</h2>
+      <ul class="list-group list-group-flush">
+        {% for u in users %}
+          <li class="list-group-item">
+            <a href="{% url 'public-profile' u.username %}" class="text-decoration-none fw-bold">
+              {{ u.username }}
+            </a>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">Нет зарегистрированных пользователей.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
 {% endblock %}

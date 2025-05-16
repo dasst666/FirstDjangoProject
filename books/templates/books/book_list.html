@@ -44,6 +44,10 @@
         </div>
     </div>
 
+    <!-- <p>Показано {{ books|length }} книг на этой странице</p>
+    <p>Всего книг: {{ books.paginator.count }}</p>
+    <p>DEBUG: books = {{ books }}</p> -->
+
     <!-- Пагинация -->
     {% if books.has_other_pages %}
         <nav aria-label="Page navigation" class="mt-4">
