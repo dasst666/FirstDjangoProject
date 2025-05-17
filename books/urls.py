@@ -15,3 +15,12 @@ urlpatterns += [
     path('search/', views.search_books, name='book-search'),
     path('import/', views.import_book, name='import-book'),
 ]
+
+# urlpatterns += [
+#     path('<int:pk>/remove/', views.remove_book_from_user, name='remove-book')
+# ]
+
+urlpatterns += [
+    # ... другие маршруты
+    path('remove-book/<int:pk>/', views.remove_book_from_user, name='remove-book'),
+]

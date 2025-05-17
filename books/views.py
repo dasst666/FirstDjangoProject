@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView
 from .models import Book, UserBook, Author, Genre
 from .forms import UserBookForm
@@ -89,6 +89,7 @@ class UserBookUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('book-detail', kwargs={'pk': self.kwargs['pk']})
 
+        
 import requests
 
 def search_books(request):
@@ -160,3 +161,9 @@ def import_book(request):
 
     return JsonResponse({'status': 'success', 'message': 'Книга добавлена'})
 
+@login_required
+def remove_book_from_user(request, pk):
+    if request.method == 'POST':
+        userbook = get_object_or_404(UserBook, user=request.user, book_id=pk)
+        userbook.delete()
+    return redirect('profile')

@@ -10,3 +10,4 @@ urlpatterns = [
     path('', user_list_view, name = 'user-list'),
     path('<str:username>/', public_profile_view, name='public-profile'),
 ]
+

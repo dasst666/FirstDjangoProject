@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import CustomUserRegisterForm
-from books.models import UserBook
+from books.models import UserBook, Book
 from django.contrib.auth import login
 
 # Create your views here.
@@ -59,3 +59,7 @@ def public_profile_view(request, username):
         'books_reading': books_reading,
         'books_want': books_want,
     })
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from books.models import Book

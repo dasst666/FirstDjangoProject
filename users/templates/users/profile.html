@@ -18,6 +18,12 @@
     {% for user_book in books_read %}
       <div class="col">
         <div class="card h-100 shadow-sm">
+          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
+              &times;
+            </button>
+          </form>
           {% if user_book.book.image_url %}
             <a href="{% url 'book-detail' pk=user_book.book.pk %}">
               <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
@@ -41,6 +47,12 @@
     {% for user_book in books_reading %}
       <div class="col">
         <div class="card h-100 shadow-sm">
+          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
+              &times;
+            </button>
+          </form>
           {% if user_book.book.image_url %}
             <a href="{% url 'book-detail' pk=user_book.book.pk %}">
               <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
@@ -64,6 +76,12 @@
     {% for user_book in books_want %}
       <div class="col">
         <div class="card h-100 shadow-sm">
+          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
+              &times;
+            </button>
+          </form>
           {% if user_book.book.image_url %}
             <a href="{% url 'book-detail' pk=user_book.book.pk %}">
               <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
