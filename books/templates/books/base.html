@@ -10,5 +10,13 @@
         {% block content %}
         {% endblock %}
     </main>
+    <!-- Скрипт для слайдера -->
+    <script>
+        function scrollSlider(id, direction) {
+          const slider = document.getElementById(id);
+          const scrollAmount = 300; // пикселей прокрутки
+          slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+      </script>
 </body>
 </html>

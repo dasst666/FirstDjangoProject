@@ -14,96 +14,104 @@
   </a>  
   <!-- Полка: Прочитано -->
   <h4 class="mt-4">Прочитано</h4>
-  <div class="row row-cols-2 row-cols-md-4 g-4">
-    {% for user_book in books_read %}
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
-              &times;
-            </button>
-          </form>
-          {% if user_book.book.image_url %}
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
-              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-            </a>
+  <div class="position-relative">
+    <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider', -1)">
+      ←
+    </button>
+    <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider', 1)">
+      →
+    </button>
+
+    <div id="read-slider" class="d-flex overflow-auto gap-3 py-2 px-1">
+      {% for user_book in books_read %}
+        <div style="min-width: 250px;">
+          <div class="card h-100 shadow-sm">
+            <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">&times;</button>
+            </form>
+            {% if user_book.book.image_url %}
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+                <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="height: 200px; object-fit: contain;" alt="Обложка">
+              </a>
             {% endif %}
-          <div class="card-body text-center">
-            <h6 class="card-title">{{ user_book.book.title }}</h6>
-            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            <div class="card-body text-center">
+              <h6 class="card-title">{{ user_book.book.title }}</h6>
+              <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            </div>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-muted">Нет прочитанных книг.</p>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 
   <!-- Полка: Читаю -->
-  <h4 class="mt-5">Сейчас читаю</h4>
-  <div class="row row-cols-2 row-cols-md-4 g-4">
-    {% for user_book in books_reading %}
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
-              &times;
-            </button>
-          </form>
-          {% if user_book.book.image_url %}
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
-              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-            </a>
+  <h4 class="mt-4">Читаю</h4>
+  <div class="position-relative">
+    <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider-reading', -1)">
+      ←
+    </button>
+    <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider-reading', 1)">
+      →
+    </button>
+
+    <div id="read-slider-reading" class="d-flex overflow-auto gap-3 py-2 px-1">
+      {% for user_book in books_reading %}
+        <div style="width: 250px;">
+          <div class="card h-100 shadow-sm">
+            <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">&times;</button>
+            </form>
+            {% if user_book.book.image_url %}
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+                <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="height: 200px; object-fit: contain;" alt="Обложка">
+              </a>
             {% endif %}
-          <div class="card-body text-center">
-            <h6 class="card-title">{{ user_book.book.title }}</h6>
-            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            <div class="card-body text-center">
+              <h6 class="card-title">{{ user_book.book.title }}</h6>
+              <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            </div>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-muted">Нет книг в процессе чтения.</p>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 
   <!-- Полка: Буду читать -->
-  <h4 class="mt-5">Планирую прочитать</h4>
-  <div class="row row-cols-2 row-cols-md-4 g-4">
-    {% for user_book in books_want %}
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">
-              &times;
-            </button>
-          </form>
-          {% if user_book.book.image_url %}
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}">
-              <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="Обложка">
-            </a>
-              {% endif %}
-          <div class="card-body text-center">
-            <h6 class="card-title">{{ user_book.book.title }}</h6>
-            <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
-            <p class="card-text">
-              <small class="text-muted">
-                {% for genre in user_book.book.genres.all %}
-                  {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </small>
-            </p>
-            <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+  <h4 class="mt-5">Буду читать</h4>
+  <div class="position-relative">
+    <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider-want', -1)">
+      ←
+    </button>
+    <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1 shadow" onclick="scrollSlider('read-slider-want', 1)">
+      →
+    </button>
+
+    <div id="read-slider-want" class="d-flex overflow-auto gap-3 py-2 px-1">
+      {% for user_book in books_want %}
+        <div style="width: 250px;">
+          <div class="card h-100 shadow-sm">
+            <form method="post" action="{% url 'remove-book' user_book.book.pk %}" class="position-absolute top-0 end-0 m-1">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;">&times;</button>
+            </form>
+            {% if user_book.book.image_url %}
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}">
+                <img src="{{ user_book.book.image_url }}" class="card-img-top img-fluid" style="height: 200px; object-fit: contain;" alt="Обложка">
+              </a>
+            {% endif %}
+            <div class="card-body text-center">
+              <h6 class="card-title">{{ user_book.book.title }}</h6>
+              <p class="card-text"><small class="text-muted">{{ user_book.book.author }}</small></p>
+              <a href="{% url 'book-detail' pk=user_book.book.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            </div>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-muted">Нет книг в списке "Буду читать".</p>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 
   <div class="text-center mt-5">
